@@ -28,6 +28,7 @@ Apresentar formação, experiência profissional, habilidades, projetos e um jog
 - Experiência Profissional
 - Projetos
 - Jogo
+- contato
 
 ## Jogo da forca
 
@@ -39,31 +40,6 @@ A tela Jogo contém uma forca de filmes feita nativamente em React Native, sem W
 npm install
 npx expo start
 ```
-
-Depois, abra o app pelo Expo Go ou por um emulador Android/iOS.
-
-## Como publicar no Expo
-
-1. Crie ou acesse sua conta Expo.
-2. Instale e configure o EAS CLI, se ainda não tiver:
-
-```bash
-npm install -g eas-cli
-eas login
-```
-
-3. Configure o projeto:
-
-```bash
-eas build:configure
-```
-
-4. Gere uma build ou publique conforme a necessidade da atividade:
-
-```bash
-eas build --platform android
-```
-
 ## Links
 
 - GitHub:
