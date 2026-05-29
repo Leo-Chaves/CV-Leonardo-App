@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "CV-Leonardo-App",
-    "slug": "cv-leonardo-app",
+    "slug": "cv-leonardo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/image.png",
@@ -27,6 +27,19 @@
     "plugins": [
       "expo-router",
       "expo-status-bar"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "241983d8-54f3-4a96-aa14-ea5f9e4d2da8"
+      }
+    },
+    "owner": "leo-chaves",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/241983d8-54f3-4a96-aa14-ea5f9e4d2da8"
+    }
   }
 }
