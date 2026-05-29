@@ -21,7 +21,7 @@ export function SectionTitle({ title, subtitle, eyebrow }: SectionTitleProps) {
 const styles = StyleSheet.create({
   container: {
     gap: 8,
-    marginBottom: 18,
+    marginBottom: 8,
   },
   eyebrow: {
     color: colors.secondary,

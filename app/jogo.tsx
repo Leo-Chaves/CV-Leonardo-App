@@ -94,8 +94,7 @@ export default function JogoScreen() {
     <Screen>
       <SectionTitle
         eyebrow="Filmes"
-        title="Jogo da Forca: Filmes"
-        subtitle="Escolha letras no teclado virtual e tente descobrir o filme sorteado."
+        title="Jogo da Forca"
       />
 
       <AppCard style={styles.wordCard}>

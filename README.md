@@ -43,5 +43,5 @@ npx expo start
 ## Links
 
 - GitHub: https://github.com/Leo-Chaves/CV-Leonardo-App
-- Expo: https://expo.dev/accounts/leo-chaves/projects/cv-leonardo/updates/18bf87d7-27f5-40ce-a6dc-7a7bf3a2b4d6
+- Expo: https://expo.dev/accounts/leo-chaves-org/projects/cv-leonardo/updates/5f3c99ce-9a76-4d86-98c7-721fddfa64f9
 - YouTube:
