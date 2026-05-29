@@ -25,8 +25,7 @@
       "typedRoutes": true
     },
     "plugins": [
-      "expo-router",
-      "expo-status-bar"
+      "expo-router"
     ],
     "extra": {
       "router": {},
