@@ -90,11 +90,6 @@ export default function JogoScreen() {
     setUsedLetters([]);
   }
 
-  function drawNewMovie() {
-    setCurrentMovie((movie) => getRandomMovie(movie));
-    setUsedLetters([]);
-  }
-
   return (
     <Screen>
       <SectionTitle
@@ -173,8 +168,7 @@ export default function JogoScreen() {
       </View>
 
       <View style={styles.actions}>
-        <AppButton title="Reiniciar" onPress={resetGame} variant="secondary" style={styles.action} />
-        <AppButton title="Sortear novo filme" onPress={drawNewMovie} style={styles.action} />
+        <AppButton title="Reiniciar jogo" onPress={resetGame} style={styles.action} />
       </View>
     </Screen>
   );
