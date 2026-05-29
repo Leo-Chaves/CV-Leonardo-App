@@ -49,17 +49,26 @@ function getWrongLetters(movie: string, usedLetters: string[]) {
   return usedLetters.filter((letter) => !normalizedMovie.includes(letter));
 }
 
+function getCorrectLetters(movie: string, usedLetters: string[]) {
+  const normalizedMovie = normalizeText(movie);
+  return usedLetters.filter((letter) => normalizedMovie.includes(letter));
+}
+
 export default function JogoScreen() {
   const [currentMovie, setCurrentMovie] = useState(() => getRandomMovie());
   const [usedLetters, setUsedLetters] = useState<string[]>([]);
 
   const normalizedMovie = normalizeText(currentMovie);
+  const correctLetters = useMemo(
+    () => getCorrectLetters(currentMovie, usedLetters),
+    [currentMovie, usedLetters],
+  );
   const wrongLetters = useMemo(
     () => getWrongLetters(currentMovie, usedLetters),
     [currentMovie, usedLetters],
   );
   const errors = wrongLetters.length;
-  const remainingAttempts = MAX_ERRORS - errors;
+  const remainingAttempts = Math.max(MAX_ERRORS - errors, 0);
   const hiddenMovie = buildHiddenMovie(currentMovie, usedLetters);
   const hasWon = normalizedMovie
     .split('')
@@ -77,6 +86,7 @@ export default function JogoScreen() {
   }
 
   function resetGame() {
+    setCurrentMovie((movie) => getRandomMovie(movie));
     setUsedLetters([]);
   }
 
@@ -111,9 +121,7 @@ export default function JogoScreen() {
         </View>
         <Text style={styles.errorText}>Erro {errors} de 6</Text>
         <Hangman errors={errors} />
-        <Text style={styles.usedLetters}>
-          Letras usadas: {usedLetters.length > 0 ? usedLetters.join(', ') : 'nenhuma'}
-        </Text>
+        <AttemptList correctLetters={correctLetters} wrongLetters={wrongLetters} />
       </AppCard>
 
       {isGameOver ? (
@@ -126,7 +134,7 @@ export default function JogoScreen() {
             <Text style={styles.resultTitle}>{hasWon ? 'Vitória!' : 'Derrota!'}</Text>
           <Text style={styles.resultText}>
             {hasWon
-              ? 'Você acertou o filme.'
+              ? `Parabéns! Você acertou: ${currentMovie}.`
               : `O filme era ${currentMovie}. Tente novamente.`}
           </Text>
         </AppCard>
@@ -135,6 +143,9 @@ export default function JogoScreen() {
       <View style={styles.keyboard}>
         {alphabet.map((letter) => {
           const disabled = usedLetters.includes(letter) || isGameOver;
+          const isCorrect = correctLetters.includes(letter);
+          const isWrong = wrongLetters.includes(letter);
+
           return (
             <Pressable
               key={letter}
@@ -143,20 +154,71 @@ export default function JogoScreen() {
               style={({ pressed }) => [
                 styles.key,
                 pressed && styles.keyPressed,
-                disabled && styles.keyDisabled,
+                isCorrect && styles.keyCorrect,
+                isWrong && styles.keyWrong,
+                disabled && !isCorrect && !isWrong && styles.keyDisabled,
               ]}
             >
-              <Text style={[styles.keyText, disabled && styles.keyDisabledText]}>{letter}</Text>
+              <Text
+                style={[
+                  styles.keyText,
+                  disabled && !isCorrect && !isWrong && styles.keyDisabledText,
+                ]}
+              >
+                {letter}
+              </Text>
             </Pressable>
           );
         })}
       </View>
 
       <View style={styles.actions}>
-        <AppButton title="Reiniciar jogo" onPress={resetGame} variant="secondary" style={styles.action} />
+        <AppButton title="Reiniciar" onPress={resetGame} variant="secondary" style={styles.action} />
         <AppButton title="Sortear novo filme" onPress={drawNewMovie} style={styles.action} />
       </View>
     </Screen>
+  );
+}
+
+function AttemptList({
+  correctLetters,
+  wrongLetters,
+}: {
+  correctLetters: string[];
+  wrongLetters: string[];
+}) {
+  return (
+    <View style={styles.attempts}>
+      <View style={styles.attemptGroup}>
+        <Text style={styles.attemptLabel}>Corretas</Text>
+        <View style={styles.attemptChips}>
+          {correctLetters.length > 0 ? (
+            correctLetters.map((letter) => (
+              <Text key={letter} style={[styles.attemptChip, styles.correctChip]}>
+                {letter}
+              </Text>
+            ))
+          ) : (
+            <Text style={styles.emptyAttempts}>nenhuma</Text>
+          )}
+        </View>
+      </View>
+
+      <View style={styles.attemptGroup}>
+        <Text style={styles.attemptLabel}>Incorretas</Text>
+        <View style={styles.attemptChips}>
+          {wrongLetters.length > 0 ? (
+            wrongLetters.map((letter) => (
+              <Text key={letter} style={[styles.attemptChip, styles.wrongChip]}>
+                {letter}
+              </Text>
+            ))
+          ) : (
+            <Text style={styles.emptyAttempts}>nenhuma</Text>
+          )}
+        </View>
+      </View>
+    </View>
   );
 }
 
@@ -234,11 +296,46 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     textAlign: 'center',
   },
-  usedLetters: {
-    color: colors.mutedText,
-    fontSize: 14,
-    lineHeight: 22,
+  attempts: {
+    gap: 12,
+  },
+  attemptGroup: {
+    gap: 7,
+  },
+  attemptLabel: {
+    color: colors.primaryLight,
+    fontSize: 12,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+  },
+  attemptChips: {
+    minHeight: 30,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 7,
+  },
+  attemptChip: {
+    overflow: 'hidden',
+    minWidth: 30,
+    borderRadius: 999,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: '900',
     textAlign: 'center',
+  },
+  correctChip: {
+    backgroundColor: colors.success,
+  },
+  wrongChip: {
+    backgroundColor: colors.danger,
+  },
+  emptyAttempts: {
+    color: colors.subtleText,
+    fontSize: 14,
+    lineHeight: 24,
+    fontWeight: '700',
   },
   hangman: {
     minHeight: 140,
@@ -341,6 +438,14 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.cardAlt,
     opacity: 0.55,
+  },
+  keyCorrect: {
+    borderColor: colors.success,
+    backgroundColor: colors.success,
+  },
+  keyWrong: {
+    borderColor: colors.danger,
+    backgroundColor: colors.danger,
   },
   keyText: {
     color: colors.text,
